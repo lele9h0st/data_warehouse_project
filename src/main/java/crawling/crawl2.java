@@ -48,16 +48,22 @@ public class crawl2 {
                 List<Element> currentLocations = document.getElementsByClass("current-location");
                 Element mainBlock = currentLocations.get(0);
                 String currentTemp = mainBlock.getElementsByClass("current-temperature").get(0).text();
+                currentTemp=currentTemp.substring(0,currentTemp.length()-1);
                 String overview = mainBlock.getElementsByClass("overview-caption-item-detail").get(0).text();
 
                 Element weatherDetail = mainBlock.getElementsByClass("weather-detail").get(0);
                 List<Element> detailList = weatherDetail.select(":root > div");
                 String highLowTemp = detailList.get(0).select(":root > div").get(1).getElementsByTag("span").get(1).text();
+
                 String lowTemp = highLowTemp.substring(0, highLowTemp.lastIndexOf("/")).trim();
+                lowTemp=lowTemp.substring(0,lowTemp.length()-1);
                 String highTemp = highLowTemp.substring(highLowTemp.lastIndexOf("/") + 1).trim();
+                highTemp=highTemp.substring(0,highTemp.length()-1);
                 String humidity = detailList.get(1).select(":root > div").get(1).getElementsByTag("span").get(1).text();
-                String visibility = detailList.get(2).select(":root > div").get(1).getElementsByTag("span").get(1).text();
-                String wind = detailList.get(3).select(":root > div").get(1).getElementsByTag("span").get(1).text();
+                humidity=humidity.substring(0,humidity.length()-1);
+                String visibility = detailList.get(2).select(":root > div").get(1).getElementsByTag("span").get(1).text().split(" ")[0];
+
+                String wind = detailList.get(3).select(":root > div").get(1).getElementsByTag("span").get(1).text().split(" ")[0];
                 String UVLevel = detailList.get(5).select(":root > div").get(1).getElementsByTag("span").get(1).text();
 
 
