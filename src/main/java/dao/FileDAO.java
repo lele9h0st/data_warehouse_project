@@ -44,4 +44,16 @@ public class FileDAO {
                 .bind(0, fileName)
                 .invoke());
     }
+
+    public void finishCrawlFileLog(String fileName) {
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call finish_crawl_file_log(?)}")
+                .bind(0, fileName)
+                .invoke());
+    }
+
+    public void errorCrawlFileLog(String fileName) {
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call error_crawl_file_log(?)}")
+                .bind(0, fileName)
+                .invoke());
+    }
 }

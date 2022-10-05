@@ -48,7 +48,7 @@ public class TranferData {
             // APPROACH #1: uploads first file using an InputStream
             File firstLocalFile = new File(filePath);
             System.out.println(firstLocalFile.exists());
-            String firstRemoteFile = "/data/"+filePath.substring(filePath.lastIndexOf("\\")+1);
+            String firstRemoteFile = "/data2/"+filePath.substring(filePath.lastIndexOf("\\")+1);
 
             InputStream inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading first file");
@@ -57,7 +57,7 @@ public class TranferData {
             if (done) {
                 System.out.println("file is uploaded successfully.");
                 FileService.getInstance().storeFileConfig(f.getName());
-                f.delete();
+//                f.delete();
             } else {
                 System.out.println(" file is uploaded fail.");
             }

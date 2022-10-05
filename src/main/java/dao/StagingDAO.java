@@ -13,7 +13,7 @@ public class StagingDAO {
     }
 
     public void insertRecord(String province, String region, String date, String time, String temperature, String status, String low, String high, String humidity, String visibility, String wind, double uv, String air) {
-        OutParameters result= DbConnector.get().withHandle(h->h.createCall("{call insert_record(:province, :date, :time, :temperature, :status, :low, :high, :humidity, :visibility, :wind, :uv, :air)}")
+        OutParameters result= DbConnector.get().withHandle(h->h.createCall("{call insert_record1(:province, :date, :time, :temperature, :status, :low, :high, :humidity, :visibility, :wind, :uv, :air)}")
                 .bind("province",province)
                 .bind("date",date)
                 .bind("time",time)

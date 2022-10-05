@@ -14,8 +14,14 @@ public class FileService {
     public Config getConfig(String sourceName){
         return FileDAO.getInstance().getConfig(sourceName);
     }
-    public void insertFileLog(int idConfig, String fileName, String author){
-         FileDAO.getInstance().insertFileLog(idConfig, fileName, "ER", author);
+    public void insertFileLog(int idConfig, String fileName,String status, String author){
+         FileDAO.getInstance().insertFileLog(idConfig, fileName, status, author);
+    }
+    public void finishCrawlFileLog( String fileName){
+        FileDAO.getInstance().finishCrawlFileLog( fileName);
+    }
+    public void errorCrawlFileLog( String fileName){
+        FileDAO.getInstance().errorCrawlFileLog( fileName);
     }
     public void storeFileConfig(String fileName){
         FileDAO.getInstance().storeFileConfig(fileName);
