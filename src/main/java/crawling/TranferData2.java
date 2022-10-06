@@ -43,14 +43,47 @@ public class TranferData2 {
             line = in.readLine();
         }
         in.close();
+        uploadFileToFTPServer(f);
         f.delete();
-//        FileService.getInstance().stagingFileConfig(f.getName());
+        FileService.getInstance().stagingFileConfig(f.getName());
+    }
+    public static void uploadFileToFTPServer(File f){
+
+        try {
+            String filePath = f.getCanonicalPath();
+            FTPClient ftpClient = new FTPClient();
+
+            ftpClient.connect(server, port);
+            ftpClient.login(user, pass);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+            // APPROACH #1: uploads first file using an InputStream
+            File firstLocalFile = new File(filePath);
+            System.out.println(firstLocalFile.exists());
+            String firstRemoteFile = "/staged/"+filePath.substring(filePath.lastIndexOf("\\")+1);
+
+            InputStream inputStream = new FileInputStream(firstLocalFile);
+            System.out.println("Start uploading first file");
+            boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
+
+            inputStream.close();
+            if (done) {
+                System.out.println("file is uploaded successfully.");
+                FileService.getInstance().storeFileConfig(f.getName());
+            } else {
+                System.out.println(" file is uploaded fail.");
+            }
+
+        } catch (IOException ex) {
+            System.out.println("Error: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
     public static void main(String[] args) throws IOException {
         Config config= FileService.getInstance().getConfig("thoitiet");
         server= config.getIp();
         port=Integer.parseInt(config.getPort());
-        File folder = new File("C:\\Users\\hoang\\OneDrive\\Máy tính\\data warehouse\\weather");
         FTPClient ftpClient = new FTPClient();
         ftpClient.connect(server, port);
         ftpClient.login(user, pass);
@@ -61,6 +94,7 @@ public class TranferData2 {
             downloadFileFromServer(f.getName(),ftpClient);
             File fileTemp=new File(localFolder+f.getName());
             staging(fileTemp);
+            ftpClient.deleteFile(serverFolder1+f.getName());
         }
     }
 }
