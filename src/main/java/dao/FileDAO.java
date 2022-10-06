@@ -34,12 +34,14 @@ public class FileDAO {
                 .bind(2, status)
                 .bind(3, author).invoke());
     }
-    public void storeFileConfig(String fileName){
+
+    public void storeFileConfig(String fileName) {
         OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call store_file_log(?)}")
                 .bind(0, fileName)
                 .invoke());
     }
-    public void stagingFileConfig(String fileName){
+
+    public void stagingFileConfig(String fileName) {
         OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call staging_file_log(?)}")
                 .bind(0, fileName)
                 .invoke());
@@ -55,5 +57,12 @@ public class FileDAO {
         OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call error_crawl_file_log(?)}")
                 .bind(0, fileName)
                 .invoke());
+    }
+
+    public int countERFile() {
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call file_count_in_server(:count)}")
+                .registerOutParameter("count", Types.INTEGER)
+                .invoke());
+        return result.getInt("count");
     }
 }

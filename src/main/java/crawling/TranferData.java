@@ -53,6 +53,7 @@ public class TranferData {
             InputStream inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading first file");
             boolean done = ftpClient.storeFile(firstRemoteFile, inputStream);
+
             inputStream.close();
             if (done) {
                 System.out.println("file is uploaded successfully.");
