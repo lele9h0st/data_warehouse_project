@@ -95,7 +95,9 @@ public class TranferData2 {
             File fileTemp=new File(localFolder+f.getName());
             staging(fileTemp);
             ftpClient.deleteFile(serverFolder1+f.getName());
+            StagingService.getInstance().transfer_from_staging();
         }
+
     }
 }
 
