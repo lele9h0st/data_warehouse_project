@@ -16,20 +16,22 @@ public class FileDAO {
     }
 
     public Config getConfig(String sourceName) {
-        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call get_file_config(?,?,?,?,?,?)}")
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call get_file_config(?,?,?,?,?,?,?,?)}")
                 .bind(0, sourceName)
                 .registerOutParameter(1, Types.INTEGER)
                 .registerOutParameter(2, Types.VARCHAR)
                 .registerOutParameter(3, Types.VARCHAR)
                 .registerOutParameter(4, Types.VARCHAR)
                 .registerOutParameter(5, Types.VARCHAR)
+                .registerOutParameter(6, Types.VARCHAR)
+                .registerOutParameter(7, Types.VARCHAR)
                 .invoke());
-        return new Config(result.getInt(1), sourceName, result.getString(2), result.getString(3), result.getString(4), result.getString(5));
+        return new Config(result.getInt(1), sourceName, result.getString(2), result.getString(3), result.getString(4), result.getString(5), result.getString(6), result.getString(7));
     }
 
-    public void insertFileLog(int idConfig, String fileName, String status, String author) {
+    public void insertFileLog(String  source, String fileName, String status, String author) {
         OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call insert_file_log(?,?,?,?)}")
-                .bind(0, idConfig)
+                .bind(0, source)
                 .bind(1, fileName)
                 .bind(2, status)
                 .bind(3, author).invoke());

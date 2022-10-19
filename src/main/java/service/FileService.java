@@ -14,8 +14,8 @@ public class FileService {
     public Config getConfig(String sourceName){
         return FileDAO.getInstance().getConfig(sourceName);
     }
-    public void insertFileLog(int idConfig, String fileName,String status, String author){
-         FileDAO.getInstance().insertFileLog(idConfig, fileName, status, author);
+    public void insertFileLog(String  source, String fileName,String status, String author){
+         FileDAO.getInstance().insertFileLog(source, fileName, status, author);
     }
     public void finishCrawlFileLog( String fileName){
         FileDAO.getInstance().finishCrawlFileLog( fileName);

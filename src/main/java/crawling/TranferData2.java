@@ -20,34 +20,43 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TranferData2 {
-    static String server ;
-    static int port ;
-    static String user = "hoang";
-    static String pass = "";
-    static String localFolder="C:\\Users\\hoang\\OneDrive\\Máy tính\\data warehouse\\temp\\";
-    static String serverFolder1="/data2/";
-    public static boolean downloadFileFromServer(String fileName,FTPClient ftpClient) throws IOException {
-        String remoteFile = serverFolder1+fileName;
-        String localFile=localFolder+fileName;
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
+    static String server;
+    static int port;
+    static String user;
+    static String pass;
+    static String localFolder = "C:\\Users\\hoang\\OneDrive\\Máy tính\\data warehouse\\temp\\";
+    static String serverFolder1 = "/data/data";
+
+    public static boolean downloadFileFromServer(String fileName, FTPClient ftpClient) throws IOException {
+        String remoteFile = serverFolder1 + fileName;
+        String localFile = localFolder + fileName;
+        File localF = new File(localFile);
+        if (!localF.exists())
+            localF.createNewFile();
+        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localF));
         boolean success = ftpClient.retrieveFile(remoteFile, outputStream);
         outputStream.close();
         return success;
     }
+
     public static void staging(File f) throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
         String line = in.readLine();
+        String fileName=f.getName();
+        String source=fileName.substring(0,fileName.length()-21);
+        System.out.println("filename:"+source);
         while (line != null) {
             String[] data = line.split(",");
-            StagingService.getInstance().insertRecord(data);
+            StagingService.getInstance().insertRecord(data,source);
             line = in.readLine();
         }
         in.close();
         uploadFileToFTPServer(f);
-        f.delete();
+        System.out.println("isdeleted:"+f.delete());
         FileService.getInstance().stagingFileConfig(f.getName());
     }
-    public static void uploadFileToFTPServer(File f){
+
+    public static void uploadFileToFTPServer(File f) {
 
         try {
             String filePath = f.getCanonicalPath();
@@ -61,7 +70,7 @@ public class TranferData2 {
             // APPROACH #1: uploads first file using an InputStream
             File firstLocalFile = new File(filePath);
             System.out.println(firstLocalFile.exists());
-            String firstRemoteFile = "/staged/"+filePath.substring(filePath.lastIndexOf("\\")+1);
+            String firstRemoteFile = "/data/staged/" + filePath.substring(filePath.lastIndexOf("\\") + 1);
 
             InputStream inputStream = new FileInputStream(firstLocalFile);
             System.out.println("Start uploading first file");
@@ -80,22 +89,31 @@ public class TranferData2 {
             ex.printStackTrace();
         }
     }
+
     public static void main(String[] args) throws IOException {
-        Config config= FileService.getInstance().getConfig("thoitiet");
-        server= config.getIp();
-        port=Integer.parseInt(config.getPort());
+        Config config = FileService.getInstance().getConfig("thoitiet.vn");
+        server = config.getIp();
+        port = Integer.parseInt(config.getPort());
+        user = config.getUsername();
+        pass = config.getPassword();
         FTPClient ftpClient = new FTPClient();
         ftpClient.connect(server, port);
         ftpClient.login(user, pass);
         ftpClient.enterLocalPassiveMode();
         ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-        FTPFile[] files = ftpClient.listFiles("/data2");
-        for(FTPFile f:files){
-            downloadFileFromServer(f.getName(),ftpClient);
-            File fileTemp=new File(localFolder+f.getName());
-            staging(fileTemp);
-            ftpClient.deleteFile(serverFolder1+f.getName());
-            StagingService.getInstance().transfer_from_staging();
+        FTPFile[] files = ftpClient.listFiles(serverFolder1);
+        System.out.println(files.length);
+        for (FTPFile f : files) {
+            if (!f.getName().equals(".") && !f.getName().equals("..")) {
+                System.out.println(f.getName());
+                downloadFileFromServer(f.getName(), ftpClient);
+                File fileTemp = new File(localFolder + f.getName());
+
+                staging(fileTemp);
+                ftpClient.deleteFile(serverFolder1 + f.getName());
+                FileService.getInstance().insertFileLog(f.getName().substring(0,f.getName().length()-21), f.getName(), "TF", "hoang");
+                StagingService.getInstance().transfer_from_staging();
+            }
         }
 
     }

@@ -12,8 +12,8 @@ public class StagingDAO {
         return instance;
     }
 
-    public void insertRecord(String province, String region, String date, String time, String temperature, String status, String low, String high, String humidity, String visibility, String wind, double uv, String air) {
-        OutParameters result= DbConnector.get().withHandle(h->h.createCall("{call insert_record1(:province, :date, :time, :temperature, :status, :low, :high, :humidity, :visibility, :wind, :uv, :air)}")
+    public void insertRecord(String province, String region, String date, String time, String temperature, String status, String low, String high, String humidity, String visibility, String wind, double uv, String air,String source) {
+        OutParameters result= DbConnector.get().withHandle(h->h.createCall("{call insert_record1(:province, :date, :time, :temperature, :status, :low, :high, :humidity, :visibility, :wind, :uv, :air,:source)}")
                 .bind("province",province)
                 .bind("date",date)
                 .bind("time",time)
@@ -25,7 +25,8 @@ public class StagingDAO {
                 .bind("visibility",visibility)
                 .bind("wind",wind)
                 .bind("uv",uv)
-                .bind("air",air).invoke()
+                .bind("air",air)
+                .bind("source",source).invoke()
         );
     }
     public void transfer_from_staging(){

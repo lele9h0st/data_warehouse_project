@@ -24,9 +24,10 @@ public class crawl2 {
     public static void main(String[] args) throws IOException {
         String server;
         int port;
-        String user = "hoang";
-        String pass = "";
-        Config config = FileService.getInstance().getConfig("thoitiet");
+
+        Config config = FileService.getInstance().getConfig("thoitiet.vn");
+        String user = config.getUsername();
+        String pass = config.getPassword();
         server = config.getIp();
         port = Integer.parseInt(config.getPort());
 
@@ -46,7 +47,7 @@ public class crawl2 {
         String nameFile = "thoitiet.vn." + savedDate + "." + savedTime + ".csv";
         String filePath = "C:\\Users\\hoang\\OneDrive\\Máy tính\\data warehouse\\weather" + "\\" + nameFile;
         File f = new File(filePath);
-        FileService.getInstance().insertFileLog(config.getIdConfig(), nameFile, "ES", "hoang");
+        FileService.getInstance().insertFileLog(config.getSourceName(), nameFile, "ES", "hoang");
         OutputStreamWriter out;
         try {
             f.createNewFile();
@@ -109,7 +110,7 @@ public class crawl2 {
             ftpClient.login(user, pass);
             ftpClient.enterLocalPassiveMode();
             ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-            String remoteFile = "/data2/" + nameFile;
+            String remoteFile = "/data/data/" + nameFile;
             InputStream inputStream = new FileInputStream(f);
             System.out.println("Start uploading first file");
             boolean done = ftpClient.storeFile(remoteFile, inputStream);

@@ -7,6 +7,8 @@ public class Config {
     private String ip;
     private String v;
     private String port;
+    private String username;
+    private String password;
 
     public int getIdConfig() {
         return idConfig;
@@ -56,12 +58,30 @@ public class Config {
         this.port = port;
     }
 
-    public Config(int idConfig, String sourceName, String sourceLoad, String ip, String v, String port) {
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Config(int idConfig, String sourceName, String sourceLoad, String ip, String v, String port, String username, String password) {
         this.idConfig = idConfig;
         this.sourceName = sourceName;
         this.sourceLoad = sourceLoad;
         this.ip = ip;
         this.v = v;
         this.port = port;
+        this.username = username;
+        this.password = password;
     }
 }
