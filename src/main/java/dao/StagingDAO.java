@@ -32,4 +32,5 @@ public class StagingDAO {
     public void transfer_from_staging(){
         OutParameters result= DbConnector.get().withHandle(h->h.createCall("{call transfer_from_staging1()}").invoke());
     }
+
 }

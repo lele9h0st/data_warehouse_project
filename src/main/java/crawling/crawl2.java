@@ -47,6 +47,7 @@ public class crawl2 {
         String nameFile = "thoitiet.vn." + savedDate + "." + savedTime + ".csv";
         String filePath = "C:\\Users\\hoang\\OneDrive\\Máy tính\\data warehouse\\weather" + "\\" + nameFile;
         File f = new File(filePath);
+
         FileService.getInstance().insertFileLog(config.getSourceName(), nameFile, "ES", "hoang");
         OutputStreamWriter out;
         try {

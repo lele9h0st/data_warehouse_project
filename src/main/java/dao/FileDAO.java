@@ -60,7 +60,16 @@ public class FileDAO {
                 .bind(0, fileName)
                 .invoke());
     }
-
+    public void errorTranferStagingFile(String fileName) {
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call staging_tranfer_file_error_log(?)}")
+                .bind(0, fileName)
+                .invoke());
+    }
+    public void errorTranferWarehouseFile(String fileName) {
+        OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call warehouse_tranfer_file_error_log(?)}")
+                .bind(0, fileName)
+                .invoke());
+    }
     public int countERFile() {
         OutParameters result = DbConnector.get().withHandle(h -> h.createCall("{call file_count_in_server(:count)}")
                 .registerOutParameter("count", Types.INTEGER)

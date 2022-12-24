@@ -6,6 +6,7 @@ import com.mongodb.MongoException;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
+import dao.FileDAO;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -28,7 +29,7 @@ public class TranferData2 {
     static String serverFolder1 = "/data/data";
 
     public static boolean downloadFileFromServer(String fileName, FTPClient ftpClient) throws IOException {
-        String remoteFile = serverFolder1 + fileName;
+        String remoteFile = serverFolder1+"/" + fileName;
         String localFile = localFolder + fileName;
         File localF = new File(localFile);
         if (!localF.exists())
@@ -39,7 +40,8 @@ public class TranferData2 {
         return success;
     }
 
-    public static void staging(File f) throws IOException {
+    public static void staging(File f)  {
+        try {
         BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
         String line = in.readLine();
         String fileName=f.getName();
@@ -54,6 +56,9 @@ public class TranferData2 {
         uploadFileToFTPServer(f);
         System.out.println("isdeleted:"+f.delete());
         FileService.getInstance().stagingFileConfig(f.getName());
+        }catch (Exception e){
+            FileDAO.getInstance().errorTranferStagingFile(f.getName());
+        }
     }
 
     public static void uploadFileToFTPServer(File f) {
@@ -110,9 +115,15 @@ public class TranferData2 {
                 File fileTemp = new File(localFolder + f.getName());
 
                 staging(fileTemp);
-                ftpClient.deleteFile(serverFolder1 + f.getName());
+                ftpClient.deleteFile(serverFolder1+"/" + f.getName());
                 FileService.getInstance().insertFileLog(f.getName().substring(0,f.getName().length()-21), f.getName(), "TF", "hoang");
-                StagingService.getInstance().transfer_from_staging();
+                try {
+                    StagingService.getInstance().transfer_from_staging();
+                }catch (Exception e){
+                    FileDAO.getInstance().errorTranferWarehouseFile(f.getName());
+                }
+
+
             }
         }
 
